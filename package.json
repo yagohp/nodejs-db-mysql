@@ -1,0 +1,34 @@
+{
+  "name": "dbmysql",
+  "version": "1.0.0",
+  "description": "Esse módulo visa executar as operações de CRUD em um banco MYSQL e executar strings SQLs customizadas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./tests/mysql.test | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yagohp/nodejs-db-mysql.git"
+  },
+  "keywords": [
+    "nodejs",
+    "database",
+    "mysql",
+    "nodejs-mysql"
+  ],
+  "author": "Yago H Pereira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yagohp/nodejs-db-mysql/issues"
+  },
+  "homepage": "https://github.com/yagohp/nodejs-db-mysql#readme",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "mysql": "^2.18.1",
+    "mysql-migrations": "^1.0.7"
+  },
+  "devDependencies": {
+    "tap-spec": "^5.0.0",
+    "tape": "^5.2.1"
+  }
+}
