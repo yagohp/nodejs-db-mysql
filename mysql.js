@@ -125,6 +125,34 @@ MysqlDB.prototype.dropTable = async function (table) {
         .catch(err => self._returnError(err));
 };
 
+MysqlDB.prototype.insert = async function (table, fields, values) {
+    var self = this;
+    fields = fields.join(', ');
+    values = '"' + values.join('", "') + '"';
+
+    let sql = `INSERT INTO ${table} (${fields}) VALUES (${values});`;
+
+    return await this.exeQuery(self, sql)
+        .then(success => true)
+        .catch(err => self._returnError(err));
+};
+
+MysqlDB.prototype.selectBy = async function (table, fields, whereField, whereValue) {
+    var self = this;
+    fields = fields.join(', ');
+
+    let sql = `SELECT ${fields} FROM ${table} WHERE ${whereField} = '${whereValue}';`;
+
+    console.log(sql)
+
+    return await this.exeQuery(self, sql)
+        .then(success => {
+            console.log(success)
+            return true
+        })
+        .catch(err => self._returnError(err));
+};
+
 module.exports = MysqlDB;
 
 /*

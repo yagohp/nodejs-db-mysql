@@ -1,0 +1,51 @@
+{
+    "where": {
+        "field": "name",
+        "op": "LIKE",
+        "val": "`%João%`"
+    },
+    "or": [
+        {
+            "field": "age",
+            "op": "GTE",
+            "val": "15"
+        },
+        {
+            "field": "sex",
+            "op": "EQUALS",
+            "val": "M"
+        }
+    ],
+    "and": [
+        {
+            "field": "email",
+            "op": "DIFF",
+            "val": "`teste@teste.com`"
+        },
+        {
+            "field": "status",
+            "op": "IN",
+            "val": [
+                "active",
+                "blocked",
+                "unconfirmed"
+            ]
+        },
+        {
+            "or": [
+                {
+                    "field": "eye",
+                    "op": "NIN",
+                    "val": [
+                        "blue", "green"
+                    ]
+                },
+                {
+                    "field": "teste",
+                    "op": "DIFF",
+                    "val": "jooj"
+                }
+            ]
+        }
+    ]
+}

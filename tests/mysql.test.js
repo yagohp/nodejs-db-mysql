@@ -29,9 +29,21 @@ test('Criar uma tabela no banco de dados.', async (t) => {
     let options = '(id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,' +
             'firstname VARCHAR(30) NOT NULL, ' +
             'lastname VARCHAR(30) NOT NULL, ' +
-            'email VARCHAR(50), ' +
+            'email VARCHAR(255), ' +
             'reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)';
     t.assert(await dbInstance3.createTable('test_table', options) === true, "Criação de uma tabela.");
+    t.assert(dbInstance3.closeConn() === true, "Fechamento da conexão aberta.");
+    t.end()
+});
+
+test('Insere e consulta um registro em uma tabela no banco de dados.', async (t) => {
+    t.assert(await dbInstance3.connect() === true, "Conexao estabelecida.");
+    t.assert(await dbInstance3.insert('test_table', [
+        "firstname", "lastname", "email"
+    ], [
+        "Yago Henrique", "Pereira", "teste@teste.com"
+    ]) === true, "Registro inserido!");
+    t.assert(await dbInstance3.selectBy('test_table', ['*'], 'lastname', 'Pereira') === true, "Registro obtido!");
     t.assert(dbInstance3.closeConn() === true, "Fechamento da conexão aberta.");
     t.end()
 });
