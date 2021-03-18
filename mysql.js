@@ -143,12 +143,10 @@ MysqlDB.prototype.selectBy = async function (table, fields, whereField, whereVal
 
     let sql = `SELECT ${fields} FROM ${table} WHERE ${whereField} = '${whereValue}';`;
 
-    console.log(sql)
-
     return await this.exeQuery(self, sql)
         .then(success => {
-            console.log(success)
-            return true
+            let result = JSON.parse(JSON.stringify(success));
+            return result[0];
         })
         .catch(err => self._returnError(err));
 };

@@ -27,10 +27,10 @@ test('Criar uma tabela no banco de dados.', async (t) => {
     t.assert(await dbInstance3.connect() === true, "Conexao estabelecida.");
     t.assert(await dbInstance3.createTable('', '()') === false, "Retornar FALSE em caso de erro.");
     let options = '(id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,' +
-            'firstname VARCHAR(30) NOT NULL, ' +
-            'lastname VARCHAR(30) NOT NULL, ' +
-            'email VARCHAR(255), ' +
-            'reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)';
+        'firstname VARCHAR(30) NOT NULL, ' +
+        'lastname VARCHAR(30) NOT NULL, ' +
+        'email VARCHAR(255), ' +
+        'reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)';
     t.assert(await dbInstance3.createTable('test_table', options) === true, "Criação de uma tabela.");
     t.assert(dbInstance3.closeConn() === true, "Fechamento da conexão aberta.");
     t.end()
@@ -43,7 +43,15 @@ test('Insere e consulta um registro em uma tabela no banco de dados.', async (t)
     ], [
         "Yago Henrique", "Pereira", "teste@teste.com"
     ]) === true, "Registro inserido!");
-    t.assert(await dbInstance3.selectBy('test_table', ['*'], 'lastname', 'Pereira') === true, "Registro obtido!");
+    let result = {
+        id: 1, firstname: 'Yago Henrique',
+        lastname: 'Pereira',
+        email: 'teste@teste.com'
+    };
+    let dbResult = await dbInstance3.selectBy('test_table', ['*'], 'lastname', 'Pereira');
+    delete dbResult.reg_date;
+    let compare = JSON.stringify(dbResult) === JSON.stringify(result) ? true : false
+    t.assert(compare == true, "Registro obtido!");
     t.assert(dbInstance3.closeConn() === true, "Fechamento da conexão aberta.");
     t.end()
 });
