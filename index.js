@@ -1,3 +1,6 @@
-var QueryDirector = require('./queryDirector');
+var MysqlDB = require('./mysql');
 
-new QueryDirector().findOne();
+module.exports = MysqlDB;
+
+//var QueryDirector = require('./queryDirector');
+//new QueryDirector().findOne();
