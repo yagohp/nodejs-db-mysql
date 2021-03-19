@@ -9,7 +9,7 @@ function DB(host, port, username, password, database = '', debug = false) {
     this.debug = debug;
 };
 
-DB.prototype.connect = function (callback) {
+DB.prototype.connect = async function () {
     throw new Error('A função connect() precisa ser implementada.');
 };
 
@@ -18,7 +18,7 @@ DB.prototype.closeConn = function () {
 };
 
 /**
- * Escreve uma mensagem em um arquivo ./temp/stdout.log
+ * Escreve uma mensagem em um arquivo ../db_logs/stdout.log
  * @param {String} message  mensagem que será escrita
  */
 DB.prototype.log = function (message) {
@@ -26,7 +26,7 @@ DB.prototype.log = function (message) {
 };
 
 /**
- * Escreve uma mensagem em um arquivo ./temp/stdout.log
+ * Escreve uma mensagem em um arquivo ../db_logs/stdout.log
  * @param {String} message  mensagem que será escrita
  */
 DB.prototype.info = function (message) {
@@ -34,31 +34,51 @@ DB.prototype.info = function (message) {
 };
 
 /**
- * Escreve erros no arquivo ./temp/stderr.log
+ * Escreve erros no arquivo ../db_logs/stderr.log
  * @param {Error} error instância de Error com nome, mensagem e stacktrace
  */
 DB.prototype.error = function (error) {
     Logger.error(error);
 };
 
-DB.prototype._find = function (queryObj, callback) {
-    throw new Error('A função find() precisa ser implementada');
+DB.prototype.createDB = function (database) {
+    throw new Error('A função createDB() precisa ser implementada');
 };
 
-DB.prototype._findBy = function (queryObj, callback) {
-    throw new Error('A função findBy() precisa ser implementada');
+DB.prototype.dropDB = function (database) {
+    throw new Error('A função dropDB() precisa ser implementada');
 };
 
-DB.prototype._save = function (queryObj, callback) {
-    throw new Error('save() must be implemented');
+DB.prototype.createTable = function (table, options) {
+    throw new Error('A função createTable() precisa ser implementada');
 };
 
-DB.prototype._update = function (collections, filter, updateObj, callback) {
-    throw new Error('update() must be implemented');
+DB.prototype.dropTable = function (table) {
+    throw new Error('A função dropDB() precisa ser implementada');
 };
 
-DB.prototype._delete = function (collection, statement, callback) {
-    throw new Error('delete() must be implemented');
+DB.prototype.insert = function (table, fields, values) {
+    throw new Error('A função insert() precisa ser implementada');
+};
+
+DB.prototype.insertBatch = function (table, fields, values) {
+    throw new Error('A função insertBatch() precisa ser implementada');
+};
+
+DB.prototype.selectBy = function (table, fields, whereField, whereValue) {
+    throw new Error('A função selectBy() precisa ser implementada');
+};
+
+DB.prototype.selectAll = function (table, fields, limit, page, orderByField, orderBy) {
+    throw new Error('A função selectAll() precisa ser implementada');
+};
+
+DB.prototype.count = function (table, countExpression) {
+    throw new Error('A função count() precisa ser implementada');
+};
+
+DB.prototype.update = function (table, fields, values, whereField, whereValue) {
+    throw new Error('A função update() precisa ser implementada');
 };
 
 module.exports = DB;
