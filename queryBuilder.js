@@ -148,30 +148,6 @@ QueryBuilder.prototype._checkOperator = function (operator) {
 };
 
 /**
- * Junta duas condições em um nível a mais, por exemplo: WHERE condition AND (condition1 AND condition2)
- * @param {int} firstStatement - índice do statement, pode ser usado o método this.where como parâmetro
- * @param {String} operator - operador contido em Operators
- * @param {int} secondStatement  - índice do statement, pode ser usado o método this.where como parâmetro
- */
-QueryBuilder.prototype.whereJoiTwoStatements = function (firstStatement, operator, secondStatement) {
-    try {
-        if (!(operator in Operators)) {
-            throw new Error(`Operador inválido! Operadores permitidos: ${Object.keys(Operators)}`);
-        }
-
-        let statement1 = this.whereOptions[firstStatement];
-        let statement2 = this.whereOptions[secondStatement];
-        this.whereOptions.splice(firstStatement, 1);
-        this.whereOptions.splice(secondStatement - 1, 1);
-
-        this.whereOptions.push(`${statement1} ${operator} ${statement2}`);
-        return this;
-    } catch (error) {
-        throw error;
-    }
-};
-
-/**
  * Adiciona uma condição BETWEEN na cláusula WHERE
  * @param {String} field - coluna da tabela para a pesquisa
  * @param {*} valueStart - primeiro valor da consulta BETWEEN

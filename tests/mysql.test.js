@@ -52,11 +52,61 @@ test('Insere e consulta um registro em uma tabela no banco de dados.', async (t)
     delete dbResult.reg_date;
     let compare = JSON.stringify(dbResult) === JSON.stringify(result) ? true : false
     t.assert(compare == true, "Registro obtido!");
+
+    let mock = [
+        {
+            firstname: "Leonardo",
+            lastname: "Rosim",
+            email: "leonardo@gmail.com",
+            reg_date: '2021-03-18 17:53:11'
+        }, {
+            firstname: "Fabio",
+            lastname: "Gonçalves",
+            email: "fabiogon@gmail.com",
+            reg_date: '2021-03-18 17:53:11'
+        }, {
+            firstname: "Alisson",
+            lastname: "Menardi",
+            email: "almenardi@gmail.com",
+            reg_date: '2021-03-18 17:53:11'
+        }, {
+            firstname: "Hélio",
+            lastname: "Figueira",
+            email: "helifigs@gmail.com",
+            reg_date: '2021-03-18 17:53:11'
+        }
+    ];
+
+    var vls = [];
+    mock.forEach(element => {
+        vls.push(Object.values(element));
+    });
+
+    let res = await dbInstance3.insertBatch('test_table', 
+        ['firstname', 'lastname', 'email', 'reg_date'], vls);
+
+    t.assert(res != false && res > 0, "Inserção em lote feita com sucesso.");
+
+    mock = [
+        {
+            firstname: "Leonardo",
+            lastname: "Rosim",
+            email: "leonardo@gmail.com",
+        }, {
+            firstname: "Fabio",
+            lastname: "Gonçalves",
+            reg_date: '2021-03-18 17:53:11'
+        }
+    ];
+    res = await dbInstance3.insertBatch('test_table', 
+    ['lastname', 'email', 'reg_date'], vls);
+
+    t.assert(res == false, "Forçando erro na inserção retornando false.");
     t.assert(dbInstance3.closeConn() === true, "Fechamento da conexão aberta.");
     t.end()
 });
 
-test('Remover uma tabela no banco de dados.', async (t) => {
+/*test('Remover uma tabela no banco de dados.', async (t) => {
     t.assert(await dbInstance3.connect() === true, "Conexao estabelecida.");
     t.assert(await dbInstance3.dropTable('') === false, "Retornar FALSE em caso de erro.");
     t.assert(await dbInstance3.dropTable('test_table') === true, "Remoção de uma tabela do banco de dados.");
@@ -70,4 +120,4 @@ test('Deletar um banco de dados.', async (t) => {
     t.assert(await dbinstance.dropDB(db) === true, `Banco de dados "${db}" deletado.`);
     t.assert(dbinstance.closeConn() === true, "Fechamento da conexão aberta.");
     t.end()
-});
+});*/
