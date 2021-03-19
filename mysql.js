@@ -187,7 +187,7 @@ MysqlDB.prototype.dropTable = async function (table) {
  * @param {string} table - nome da tabela em que o registro será inserido
  * @param {array} fields - array de strings com as colunas da tabela
  * @param {array} values - array de strings com os valores do registro que será inserido
- * @returns 
+ * @returns boolean do sucesso da operação
  */
 MysqlDB.prototype.insert = async function (table, fields, values) {
     var self = this;
@@ -206,7 +206,7 @@ MysqlDB.prototype.insert = async function (table, fields, values) {
  * @param {string} table - tabela em que os registros serão inseridos
  * @param {array} fields - array de strings com os campos, ex: ['first', 'second']
  * @param {array} values - array de strings com os valores dos campos, ex: [['Leonardo', 'Rosim'], [...]].
- * @returns - Int com o total de registros inseridos
+ * @returns {Int} com o total de registros inseridos
  */
 MysqlDB.prototype.insertBatch = async function (table, fields, values) {
     var self = this;
@@ -215,9 +215,7 @@ MysqlDB.prototype.insertBatch = async function (table, fields, values) {
     let sql = `INSERT INTO ${table} (${fields}) VALUES ?`;
 
     return await this.exeQuery(self, sql, values)
-        .then(success => {
-            return success.affectedRows;
-        })
+        .then(success => success.affectedRows)
         .catch(err => self._returnError(err));
 };
 
@@ -229,7 +227,7 @@ MysqlDB.prototype.insertBatch = async function (table, fields, values) {
  * @param {string} whereValue - valor para a filtragem
  * @returns Object do primeiro registro encontrado
  */
-MysqlDB.prototype.selectBy = async function (table, fields, whereField, whereValue) {
+MysqlDB.prototype.findBy = async function (table, fields, whereField, whereValue) {
     var self = this;
     fields = fields.join(', ');
 
@@ -247,13 +245,14 @@ MysqlDB.prototype.selectBy = async function (table, fields, whereField, whereVal
  * Consulta todos os registros de uma tabela
  * @param {string} table - tabela que será consultada
  * @param {array} fields - campos que serão retornados
+ * @param {object} statement - filtro para a consulta, ex: { firstname: "Leonardo", lastname: "Rosim" }
  * @param {int} limit - quantia de itens por páginas
  * @param {int} page - página desejada
- * @param {string} orderByField - campo de ordenação
- * @param {string} orderBy - ordenação ASC ou DESC
+ * @param {array} sortFields - campos para ordenação
+ * @param {string} sortOrders - ordenação ASC ou DESC para cada campo de sortFields
  * @returns array de objects de registros paginados
  */
-MysqlDB.prototype.selectAll = async function (table, fields, limit, page, orderByField, orderBy) {
+MysqlDB.prototype.find = async function (table, fields, statement, limit, page, sortFields, sortOrders) {
     var self = this;
     fields = fields.join(', ');
 
@@ -262,7 +261,36 @@ MysqlDB.prototype.selectAll = async function (table, fields, limit, page, orderB
     if (page <= 0)
         page = 0
 
-    let sql = `SELECT ${fields} FROM ${table} ORDER BY '${orderByField}' '${orderBy}' LIMIT ${limit} OFFSET ${page}`;
+    let orders = [];
+    var len = sortFields.length;
+    try {
+        for (var i = 0; i < len; i++) {
+            orders.push(`${sortFields[i]} ${sortOrders[i]}`);
+        }
+    } catch (ex) {
+        return self._returnError(new Error(`Campos e valores não correspondem.`));
+    }
+
+    let whereArr = [];
+    if(Object.keys(statement).length > 0){
+        Object.keys(statement).map((key) => {
+            let current = statement[key];
+            whereArr.push(`${key}='${current}'`)
+        });
+    
+        statement = `${whereArr.join(' AND ')}`;;
+    }
+
+    let sql = `SELECT ${fields} FROM ${table}`;
+
+    if(whereArr.length > 0){
+        sql += ` WHERE ${statement}`;
+    }
+
+    if (orders.length > 0) {
+        sql += ` ORDER BY ${orders.join(', ')}`;
+    }
+    sql += ` LIMIT ${limit} OFFSET ${page}`;
 
     return await this.exeQuery(self, sql, null)
         .then(success => {
@@ -298,7 +326,7 @@ MysqlDB.prototype.count = async function (table, countExpression) {
  * @param {array} values - array de strings com os valores que serão atualizados
  * @param {string} whereField - campos de condição para a atualização
  * @param {string} whereValue - valor do campo da condição para a atualização
- * @returns boolean indicando o sucesso da operação
+ * @returns {int} indicando quantos registros foram atualizados
  */
 MysqlDB.prototype.update = async function (table, fields, values, whereField, whereValue) {
     var self = this;
@@ -308,13 +336,13 @@ MysqlDB.prototype.update = async function (table, fields, values, whereField, wh
         for (var i = 0; i < len; i++) {
             set.push(`${fields[i]}='${values[i]}'`);
         }
-    }catch(ex){
+    } catch (ex) {
         return self._returnError(new Error(`Campos e valores não correspondem.`));
     }
 
     let sql = `UPDATE ${table} SET ${set.join(", ")} WHERE ${whereField} = '${whereValue}'`;
     return await this.exeQuery(self, sql, null)
-        .then(success => true)
+        .then(success => success.affectedRows)
         .catch(err => self._returnError(err));
 };
 

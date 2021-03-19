@@ -98,7 +98,7 @@ QueryBuilder.prototype.where = function (whereObj, nested = false) {
             }
         });
 
-        this.whereOptions = `${sqlArr.join(' AND ')}`;;
+        this.whereOptions = `${sqlArr.join(' AND ')}`;
 
         return this;
     } catch (error) {

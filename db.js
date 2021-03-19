@@ -65,11 +65,11 @@ DB.prototype.insertBatch = function (table, fields, values) {
     throw new Error('A função insertBatch() precisa ser implementada');
 };
 
-DB.prototype.selectBy = function (table, fields, whereField, whereValue) {
+DB.prototype.findBy = function (table, fields, whereField, whereValue) {
     throw new Error('A função selectBy() precisa ser implementada');
 };
 
-DB.prototype.selectAll = function (table, fields, limit, page, orderByField, orderBy) {
+DB.prototype.find = function (table, fields, limit, page, orderByField, orderBy) {
     throw new Error('A função selectAll() precisa ser implementada');
 };
 
