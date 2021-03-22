@@ -59,6 +59,10 @@ module.exports = function createDBDirector(dbInstance) {
     DBDirector.prototype.findBy = function (table, fields, whereField, whereValue) {
         var self = this;
 
+        if(fields.length == 0){
+            fields = ['*'];
+        }
+
         return new Promise(async (resolve, reject) => {
             let conn = await self.db.connect();
             if (!conn) {
