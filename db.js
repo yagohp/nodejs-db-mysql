@@ -81,4 +81,8 @@ DB.prototype.update = function (table, fields, values, whereField, whereValue) {
     throw new Error('A função update() precisa ser implementada');
 };
 
+DB.prototype.delete = function (table, whereField, whereValue) {
+    throw new Error('A função delete() precisa ser implementada');
+};
+
 module.exports = DB;

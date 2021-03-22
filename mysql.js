@@ -235,6 +235,9 @@ MysqlDB.prototype.findBy = async function (table, fields, whereField, whereValue
 
     return await this.exeQuery(self, sql, null)
         .then(success => {
+            if(success.length == 0)
+                throw new Error(`Registro não encontrado`);
+                
             let result = JSON.parse(JSON.stringify(success));
             return result[0];
         })
@@ -341,6 +344,22 @@ MysqlDB.prototype.update = async function (table, fields, values, whereField, wh
     }
 
     let sql = `UPDATE ${table} SET ${set.join(", ")} WHERE ${whereField} = '${whereValue}'`;
+    return await this.exeQuery(self, sql, null)
+        .then(success => success.affectedRows)
+        .catch(err => self._returnError(err));
+};
+
+/**
+ * Remove um registro do banco de dados
+ * @param {string} table - tabela em que o registor será deletado
+ * @param {string} whereField - campo para o where
+ * @param {*} whereValue - valor do campo where
+ * @returns int linhas afetadas
+ */
+MysqlDB.prototype.delete = async function (table, whereField, whereValue) {
+    var self = this;
+
+    let sql = `DELETE FROM ${table} WHERE ${whereField} = '${whereValue}'`;
     return await this.exeQuery(self, sql, null)
         .then(success => success.affectedRows)
         .catch(err => self._returnError(err));

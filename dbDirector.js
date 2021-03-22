@@ -59,7 +59,7 @@ module.exports = function createDBDirector(dbInstance) {
     DBDirector.prototype.findBy = function (table, fields, whereField, whereValue) {
         var self = this;
 
-        if(fields.length == 0){
+        if (fields.length == 0) {
             fields = ['*'];
         }
 
@@ -131,10 +131,10 @@ module.exports = function createDBDirector(dbInstance) {
      * @param {array} objects - lista de objetos que serão inseridos
      * @returns {int} quantia de registros inseridos
      */
-     DBDirector.prototype.insertBatch = function (table, objects) {
+    DBDirector.prototype.insertBatch = function (table, objects) {
         var self = this;
 
-        if(objects.length == 0){
+        if (objects.length == 0) {
             throw new Error(`Informe pelo menos um registro para a inserção em lote.`);
         }
 
@@ -156,30 +156,28 @@ module.exports = function createDBDirector(dbInstance) {
             resolve(res);
         });
     };
-    
-    /*
-    DBProxy.prototype.delete = function (collection, statement) {
-        var manager = this.dbManager;
-        
-        return new Promise((resolve, reject) => {
-            manager._connect(function (connError, client) {
-                if (connError) {
-                    reject(connError);
-                    return;
-                }
-    
-                manager.delete(collection, statement, function (error, result) {
-                        if (error) {
-                            reject(error);
-                            return;
-                        }
-    
-                        manager._closeConnection(client);
-                        resolve(result);
-                    })
-            });
+
+    /**
+     * Remove um registro do banco de dados
+     * @param {string} table - tabela em que o registor será deletado
+     * @param {string} whereField - campo para o where
+     * @param {*} whereValue - valor do campo where
+     * @returns int linhas afetadas
+     */
+    DBDirector.prototype.delete = function (table, whereField, whereValue) {
+        var self = this;
+
+        return new Promise(async (resolve, reject) => {
+            let conn = await self.db.connect();
+            if (!conn) {
+                reject(new Error(self.connErrorMsg));
+            }
+
+            let res = await self.db.delete(table, whereField, whereValue);
+            self.db.closeConn();
+            resolve(res);
         });
-    };*/
+    };
 
     return new DBDirector(dbInstance);
 };
